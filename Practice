@@ -1,0 +1,122 @@
+/*
+Файл:Practica.cpp
+Літня практика
+Автор: Дульський Д.В.
+Завдання: Зворотний і додатковий код числа
+Дата створення : 25.07.2021
+*/
+
+#include<stdio.h>
+#include<locale.h>
+#include<stdlib.h>
+
+int vuvod(int array[41], int capacity);
+
+void main() {
+	
+	setlocale(LC_CTYPE, "ru");
+	int number, capacity, notation;
+	int array[41] = { 0 }, num, del, last;
+
+	printf("Введите число: \n");
+	scanf_s("%i", &number);
+	printf("Введите разрядность ячейки пямяти: \n");
+	scanf_s("%i", &capacity);
+	printf("Введите систему счисления: \n");
+	scanf_s("%i", &notation);
+
+	num = number;
+	last = capacity + 1;
+
+	if (capacity <= 0 || notation <= 1)
+	{
+		printf("Неверно введены данные");
+		exit(0);
+	}
+
+	if (notation > 36)
+	{
+		notation = 36;
+	}
+
+	if (number < 0)
+	{
+		array[capacity - 1] = notation - 1;
+		number *= -1;
+		last--;
+	}
+
+
+	for (int i = 0; number > 0; i++)
+	{
+		del = number / notation;
+		number -= del * notation;
+		array[i] = number;
+		number = del;
+		if (last == i)
+		{
+			exit(0);
+		}
+	}
+
+	printf("Прямой код: \n");
+	last = vuvod(array, capacity);
+
+	if (num < 0)
+	{
+		for (int i = last - 1; i >= 0; i--) {
+			array[i] = (notation - 1) - array[i];
+		}
+	}
+	else
+	{
+		printf("Обратный код: \n");
+		vuvod(array, capacity);
+		printf("Дополнительный код: \n");
+		vuvod(array, capacity);
+		exit(0);
+	}
+
+	printf("Обратный код: \n");
+	vuvod(array, capacity);
+
+	for (int i = 0; i < last;) {
+		array[i] += 1;
+		if (array[i] == notation)
+		{
+			array[i] = 0;
+			i++;
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	printf("Дополнительный код: \n");
+	vuvod(array, capacity);
+}
+
+int vuvod(int array[41], int capacity) {
+	int last;
+
+	for (int i = capacity + 1; i >= 0; i--)
+	{
+		if (array[i] > 0) {
+			last = i;
+			break;
+		}
+		last = 0;
+	}
+	for (int i = last; i >= 0; i--) {
+		if (array[i] > 9)
+		{
+			printf("%c", (char)array[i] + 87);
+		}
+		else {
+			printf("%i", array[i]);
+		}
+	}
+	printf("\n");
+	return last;
+}
